@@ -11,6 +11,8 @@ export type PropsCounterProps = {
     handleMaxValueChange: (event: ChangeEvent<HTMLInputElement>) => void
     error: string | null
     message: string
+    count:number
+    set:number
 
 
 }
@@ -24,22 +26,23 @@ const Counter = (props: PropsCounterProps) => {
                 <input
                     type="number"
                     onChange={props.handleMaxValueChange}
-                    className={props.error ? "error" : ""}//выводиться рамка при нажатии на кнопку и +
+                    className={props.error ? "error" : ""}
                     value={props.maxValue}
                 />
                 Start value:
                 <input
                     type="number"
                     onChange={props.handleStartValueChange}
-                    className={props.error ? "error" : ""}//выводиться рамка при нажатии на кнопку и +
-                    value={props.startValue}
+                    className={props.error ? "error" : ""}
+
                 />
             </>
 
             <button
-                value={"set"}
+                type={"button"}
+                value={props.set}
                 onClick={props.setHandler}
-                disabled={props.startValue === props.maxValue || props.disabled}>
+                disabled={ props.set === props.count || props.disabled}>
                 set
             </button>
         </div>

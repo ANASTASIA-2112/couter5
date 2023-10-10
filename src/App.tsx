@@ -1,15 +1,17 @@
-import React, {ChangeEvent, useEffect,useState} from 'react';
+import React, {ChangeEvent, useEffect, useState} from 'react';
 import './App.css';
 import Counter from "./Counter";
 import Button from "./Button";
 
 function App() {
 
+    const [count, setCount]=useState<number>(0)
     const [startValue, setStartValue] = useState<number | string>(0)
     const [maxValue, setMaxValue] = useState<number | string>(5)
-    const [disabled, setDisabled] = useState(false)
-    const [message, setMessage] = useState<string>(" ")//текст добовляеться
-    const [error, setError] = useState<string | null>(null)//текст с ошибкой и подсветкой
+    const [disabled, setDisabled] = useState<boolean>(false)
+    const [message, setMessage] = useState<string>(" ")
+    const [error, setError] = useState<string | null>(null)
+    const [set, setValue]=useState<number>(0)
 
     useEffect(() => {
         let valueAsString = localStorage.getItem("startValue")
@@ -19,56 +21,68 @@ function App() {
         }
     }, [])
 
-
     useEffect(() => {
-        localStorage.setItem("startValue", JSON.stringify(startValue));
-        localStorage.setItem("maxValue", JSON.stringify(maxValue));
+     localStorage.setItem("startValue", JSON.stringify(startValue));
+     localStorage.setItem("maxValue", JSON.stringify(maxValue));
+     localStorage.setItem("setValue", JSON.stringify(set));
 
-    }, [startValue, maxValue]);
+    }, [startValue, maxValue,set]);
+
+
 
     const incHandler = () => {
-        setStartValue(+startValue + 1)
+        setCount(count+1)
+        setStartValue(+startValue+1)
 
     }
 
     const resetHandler = () => {
         setStartValue(0)
     }
+
     const setHandler = () => {
-        if (maxValue <= 0 || startValue >= maxValue) {
+        if (maxValue <= 0 || set >= maxValue) {
             setDisabled(true);
             setMessage("");
         } else {
             setDisabled(false);
             setMessage("");
         }
-        setStartValue(startValue);
+        setStartValue(set)
     }
+
     function handleMaxValueChange(event: ChangeEvent<HTMLInputElement>) {
         const currentValue = Number(event.currentTarget.value)
-
         if (currentValue <= 0 || currentValue <= startValue) {
             setMessage('Incorrect value!');
             setError("error")
+            setDisabled(true)
         } else {
             setMessage("enter values and press set");
             setError(null)
+            setDisabled(false)
         }
         setMaxValue(currentValue)
         setStartValue("")
     }
+
     function handleStartValueChange(event: ChangeEvent<HTMLInputElement>) {
         const currentValue = Number(event.currentTarget.value)
         if (currentValue > 0 || currentValue >= maxValue) {
             setMessage("enter values and press set");
             setError(null)
+            setDisabled(false)
         } else {
             setMessage('Incorrect value!');
             setError("error")
+            setDisabled(true)
         }
-        localStorage.setItem("startValue", JSON.stringify(currentValue))
-        setStartValue(currentValue);
+        setStartValue(currentValue)
+        setStartValue("")
+        setValue(currentValue)
+
     }
+
     return (
         <div className="App">
 
@@ -81,6 +95,8 @@ function App() {
                 handleStartValueChange={handleStartValueChange}
                 error={error}
                 message={message}
+                count={count}
+                set={set}
             />
             <Button
                 incHandler={incHandler}
@@ -90,6 +106,8 @@ function App() {
                 maxValue={maxValue}
                 disabled={disabled}
                 error={error}
+                set={set}
+                count={count}
             />
         </div>
     );
